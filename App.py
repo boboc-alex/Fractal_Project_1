@@ -1,1 +1,0 @@
-#Here is the place for the main code of App with  Sierpinski hexagon functions
