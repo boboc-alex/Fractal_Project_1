@@ -3,8 +3,8 @@ import math
 pygame.init()
 
 # CREATING THE SCREEN
-screen_width = 1100  
-screen_height = 800  
+screen_width = 1600  
+screen_height =1200  
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Sierpinski Hexagon Fractal")  
 
@@ -13,14 +13,17 @@ dark_orange = (255, 140, 0)
 yellow = (255, 255, 0)  
 background_color = yellow  
 
-# CHARACTER 
-character_width = 100
-character_height = 100
-vel = 5
-image_path = r"C:\Users\Asus\Downloads\BEE_char.png"  # Replace with your image path    # Load the character image
-character_image = pygame.image.load(image_path)
-character_image = pygame.transform.scale(character_image, (character_width, character_height))  # Scale image to fit character size
-
+# CHARACTER
+velocity = 5
+class Player():
+    def __init__(self,x,y):
+        
+        image_path = r"C:\Users\Asus\Downloads\BEE_char.png"  # Replace with your image path    
+        self.character_image = pygame.image.load(image_path)  # Load the character image
+        self.character_image = pygame.transform.scale(self.character_image, (60, 80))  # Scale image to fit character size
+        self.rect = self.character_image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 # ZOOM 
 zoom_FIRST = 1.0  # Starting zoom factor (1.0 means no zoom, first version)
@@ -69,6 +72,8 @@ def draw_sierpinski_hexagon(center_x, center_y, radius, depth, rotation=0):
     # Draw the central smaller hexagon
     draw_sierpinski_hexagon(center_x, center_y, inner_radius, depth - 1, rotation)
 
+
+
 running = True
 rotation_angle = 90  # (The shape we want actually)
 max_depth = 4  # LEVEL OF THE FRACTAL ( make it max 5 for now, otherwise its lagging)
@@ -79,8 +84,7 @@ center_y = screen_height // 2
 base_radius = 300
 
 #Draw character on middle of the screen
-char_locx = center_x - character_width // 2
-char_locy = center_y - character_height // 2
+char_loc = Player((center_x-40), (center_y-60))
 
 
 # Main loop to keep the window open and visualize fractal
@@ -92,22 +96,20 @@ while running:
 
     # Character Movements
     keys_pressed = pygame.key.get_pressed()  # Check for key presses
-    if keys_pressed[pygame.K_LEFT] and char_locx > vel:
-        char_locx -= vel
-    if keys_pressed[pygame.K_RIGHT] and char_locx < 1100 - character_width - vel:
-        char_locx += vel
-    if keys_pressed[pygame.K_UP] and char_locy > vel :
-        char_locy -= vel
-    if keys_pressed[pygame.K_DOWN] and char_locy < 800 - character_height - vel:
-        char_locy += vel
-
+    if keys_pressed[pygame.K_LEFT] and char_loc.rect.x > velocity:
+        char_loc.rect.x -= velocity
+    if keys_pressed[pygame.K_RIGHT] and char_loc.rect.x < screen_width - char_loc.rect.width - velocity:
+        char_loc.rect.x += velocity
+    if keys_pressed[pygame.K_UP] and char_loc.rect.y > velocity:
+        char_loc.rect.y -= velocity
+    if keys_pressed[pygame.K_DOWN] and char_loc.rect.y < screen_height - char_loc.rect.height - velocity:
+        char_loc.rect.y += velocity
 
     # Zoom in and out with keyboard
-    keys = pygame.key.get_pressed()
-    if  keys[pygame.K_KP_PLUS]:   #    Numpad +
+    if keys_pressed[pygame.K_KP_PLUS]:   # Numpad +
         if zoom_FIRST < max_zoom:
             zoom_FIRST += zoom_LEVEL
-    if  keys[pygame.K_KP_MINUS]:  #    Numpad -
+    if keys_pressed[pygame.K_KP_MINUS]:  # Numpad -
         if zoom_FIRST > min_zoom:
             zoom_FIRST -= zoom_LEVEL
 
@@ -115,14 +117,17 @@ while running:
 
     # Apply zoom factor to the radius
     radius = base_radius * zoom_FIRST
-    
+
+    # Scale the character image based on zoom
+    scaled_character = pygame.transform.scale(char_loc.character_image, (int(60 * zoom_FIRST), int(80 * zoom_FIRST)))               #### NOTE THAT 
+    scaled_rect = scaled_character.get_rect(center=(char_loc.rect.center))
 
     # Draw the Sierpiński hexagon
     draw_sierpinski_hexagon(center_x, center_y, radius, max_depth, rotation_angle) 
 
-    # Draw the character
-    screen.blit(character_image, (char_locx, char_locy))  # Draw the character image at the new position
-    
+    # Draw the scaled character
+    screen.blit(scaled_character, scaled_rect)
+
     pygame.display.update()
   
 pygame.quit()
