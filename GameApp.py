@@ -110,10 +110,10 @@ def run_game():
             char_loc.rect.y += velocity
 
         # Zoom in and out with keyboard
-        if keys_pressed[pygame.K_KP_PLUS]:   # Numpad +
+        if keys_pressed[pygame.K_1]:   # Numpad +
             if zoom_FIRST < max_zoom:
                 zoom_FIRST += zoom_LEVEL
-        if keys_pressed[pygame.K_KP_MINUS]:  # Numpad -
+        if keys_pressed[pygame.K_2]:  # Numpad -
             if zoom_FIRST > min_zoom:
                 zoom_FIRST -= zoom_LEVEL
 
