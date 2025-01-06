@@ -167,6 +167,7 @@ def run_game():
     # Main Game Loop
     running = True
     while running:
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -227,6 +228,48 @@ def run_game():
         pygame.display.flip()
         clock.tick(60)
         
+
+=======
+        for event in pygame.event.get():  
+            if event.type == pygame.QUIT:  
+                running = False  
+
+        # Character Movements
+        keys_pressed = pygame.key.get_pressed()  # Check for key presses
+        if keys_pressed[pygame.K_LEFT] and char_loc.rect.x > velocity:
+            char_loc.rect.x -= velocity
+        if keys_pressed[pygame.K_RIGHT] and char_loc.rect.x < screen_width - char_loc.rect.width - velocity:
+            char_loc.rect.x += velocity
+        if keys_pressed[pygame.K_UP] and char_loc.rect.y > velocity:
+            char_loc.rect.y -= velocity
+        if keys_pressed[pygame.K_DOWN] and char_loc.rect.y < screen_height - char_loc.rect.height - velocity:
+            char_loc.rect.y += velocity
+
+        # Zoom in and out with keyboard
+        if keys_pressed[pygame.K_1]:   # Numpad +
+            if zoom_FIRST < max_zoom:
+                zoom_FIRST += zoom_LEVEL
+        if keys_pressed[pygame.K_2]:  # Numpad -
+            if zoom_FIRST > min_zoom:
+                zoom_FIRST -= zoom_LEVEL
+
+        screen.fill(background_color)
+
+        # Apply zoom factor to the radius
+        radius = base_radius * zoom_FIRST
+
+        # Scale the character image based on zoom
+        scaled_character = pygame.transform.scale(char_loc.character_image, (int(60 * zoom_FIRST), int(80 * zoom_FIRST)))               #### NOTE THAT 
+        scaled_rect = scaled_character.get_rect(center=(char_loc.rect.center))
+
+        # Draw the Sierpiński hexagon
+        draw_sierpinski_hexagon(center_x, center_y, radius, max_depth, rotation_angle) 
+
+        # Draw the scaled character
+        screen.blit(scaled_character, scaled_rect)
+
+        pygame.display.update()
+    
 
     pygame.quit()
 
