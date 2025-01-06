@@ -2,6 +2,7 @@ import pygame
 import math
 
 # Function to run the game (called from the main menu)
+
 def run_game():
 
     # Initialize Pygame
