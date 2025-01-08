@@ -1,6 +1,7 @@
 import cv2
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import *
 from GameApp import run_game  # Import the Hexagon game script (ensure GameApp.py is in the same directory)
 
 # VIDEO BACKGROUD
@@ -30,9 +31,10 @@ class MainMenuApp:
         self.root = root
         self.root.title("Main Menu")
         self.root.geometry("800x600")
+        root.configure(background='yellow')
 
         # Initialize video background
-        self.video_bg = VideoBackground(r"C:\\Users\\Asus\\Downloads\\bee_video.mp4", 800, 600)
+        self.video_bg = VideoBackground(r"C:\Users\User\work program\uber\HousingAnywhere[infa]\Fractal_Project_1\Assets\bee_video.mp4", 800, 600)
 
         # Background label for video
         self.bg_label = tk.Label(root)
@@ -41,24 +43,26 @@ class MainMenuApp:
 
         self.update_background()
 
-        # Title label
-        title_label = tk.Label(root, text="A BEE'S ADVENTURE", font=("Arial", 24, "bold"), bg="black", fg="white")
-        title_label.pack(pady=20)
-
+        #Title label with box
+        rectangle = Canvas(root, width=400, height=150, bg="orange", highlightthickness=1, highlightbackground="black")
+        rectangle.create_text(200, 75, text="A Bee's Adventure", fill="black", font=("Arial", 24, "bold"),)
+        rectangle.pack(pady=20)  # Add the canvas to the layout
+        
+    
         # Start the Game Button
-        start_button = tk.Button(root, text="Start the Game", font=("Arial", 14), width=20, command=self.start_game)
+        start_button = tk.Button(root, text="Play Game", font=("Arial", 14), width=20, command=self.start_game, bg = "orange")
         start_button.pack(pady=10)
-
+        
         # Options Button
-        options_button = tk.Button(root, text="Options", font=("Arial", 14), width=20, command=self.open_options)
+        options_button = tk.Button(root, text="Options", font=("Arial", 14), width=20, command=self.open_options, bg= "orange")
         options_button.pack(pady=10)
-
+        
         # Achievements Button
-        achievements_button = tk.Button(root, text="Achievements", font=("Arial", 14), width=20, command=self.view_achievements)
+        achievements_button = tk.Button(root, text="Achievements", font=("Arial", 14), width=20, command=self.view_achievements, bg= "orange")
         achievements_button.pack(pady=10)
-
+        
         # Quit the Game Button
-        quit_button = tk.Button(root, text="Quit the Game", font=("Arial", 14), width=20, command=self.quit_game)
+        quit_button = tk.Button(root, text="Quit", font=("Arial", 14), width=20, command=self.quit_game, bg= "orange")
         quit_button.pack(pady=10)
 
     def update_background(self):

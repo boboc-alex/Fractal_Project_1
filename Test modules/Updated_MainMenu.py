@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
-from Game import run_game # Import the Hexagon game script (ensure GameApp.py is in the same directory)
+from GameApp import run_game # Import the Hexagon game script (ensure GameApp.py is in the same directory)
 
 class MainMenuApp:
     def __init__(self, root):

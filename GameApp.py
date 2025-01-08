@@ -1,5 +1,6 @@
 import pygame
 import math
+from pygame_widgets import slider
 
 # Function to run the game (called from the main menu)
 
@@ -29,7 +30,7 @@ def run_game():
     CHARACTER_WIDTH = 100
     CHARACTER_HEIGHT = 100
     VELOCITY = 5
-    CHARACTER_IMAGE_PATH = r"C:\\Users\\Asus\\Downloads\\BEE_char.png"  # Replace with your image path
+    CHARACTER_IMAGE_PATH = r"C:\Users\User\work program\uber\HousingAnywhere[infa]\Fractal_Project_1\Assets\BEE_char.png"  # Replace with your image path
     character_image = pygame.image.load(CHARACTER_IMAGE_PATH)
     character_image = pygame.transform.scale(character_image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
@@ -67,7 +68,7 @@ def run_game():
                 self.rect.y += self.speed
 
     # Collectible Class
-    COLLECTIBLE_IMAGE_PATH = r"C:\\Users\\Asus\\Downloads\\HONEY.png"  # Replace with your image path
+    COLLECTIBLE_IMAGE_PATH = r"C:\Users\User\work program\uber\HousingAnywhere[infa]\Fractal_Project_1\Assets\HONEY.png"  # Replace with your image path
     collectible_image = pygame.image.load(COLLECTIBLE_IMAGE_PATH)
     collectible_image = pygame.transform.scale(collectible_image, (30, 30))
 
@@ -164,12 +165,55 @@ def run_game():
         all_sprites.add(collectible)
         collectibles.add(collectible)
 
+    # Add Slider class after the imports and before run_game()
+    class Slider():
+        def __init__(self, pos: tuple, size: tuple, inital_val: float, min_val: float, max_val: float):
+            self.pos = pos
+            self.size = size
+            self.slider_left_pos = self.pos[0] - (size[0]//2)
+            self.slider_right_pos = self.pos[0] + (size[0]//2)
+            self.slider_top_pos = self.pos[1] - (size[1]//2)
+            
+            self.min_val = min_val
+            self.max_val = max_val
+            self.dragging = False
+            
+            #since button is not 0 pixels wide, it must be offset by half the width
+            inital_pixal_val = (self.size[0] * (inital_val - self.min_val)) / (self.max_val - self.min_val)
+            self.button_rect = pygame.Rect(self.slider_left_pos + inital_pixal_val - 5, self.slider_top_pos, 10, self.size[1])
+        
+        def render(self, screen):
+            pygame.draw.rect(screen, "orange", (self.slider_left_pos, self.slider_top_pos, self.size[0], self.size[1]))
+            pygame.draw.rect(screen, "yellow", self.button_rect)
+
+        def handle_event(self, event):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.button_rect.collidepoint(event.pos):
+                    self.dragging = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.dragging = False
+            elif event.type == pygame.MOUSEMOTION:
+                if self.dragging:
+                    new_x = min(max(event.pos[0], self.slider_left_pos), self.slider_right_pos)
+                    self.button_rect.x = new_x
+        
+        def get_value(self):
+            slider_range = self.slider_right_pos - self.slider_left_pos
+            relative_x = self.button_rect.x - self.slider_left_pos
+            return self.min_val + ((relative_x / slider_range) * (self.max_val - self.min_val))
+
+    # Add after the game variables initialization:
+    slider_width, slider_height = 200, 20
+    slider_pos = (SCREEN_WIDTH - slider_width // 2 - 20, SCREEN_HEIGHT - slider_height // 2 - 20)
+    zoom_slider = Slider(slider_pos, (slider_width, slider_height), 1.0, MIN_ZOOM, MAX_ZOOM)
+
     # Main Game Loop
     running = True
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            zoom_slider.handle_event(event)  # Add this line to handle slider events
 
         # Player Movement
         keys_pressed = pygame.key.get_pressed()
@@ -203,10 +247,7 @@ def run_game():
             COLOR_TABLE = (DARK_GREEN, GREEN)
 
         # Zoom Controls
-        if keys_pressed[pygame.K_KP_PLUS] and ZOOM_FACTOR < MAX_ZOOM:
-            ZOOM_FACTOR += ZOOM_INCREMENT
-        elif keys_pressed[pygame.K_KP_MINUS] and ZOOM_FACTOR > MIN_ZOOM:
-            ZOOM_FACTOR -= ZOOM_INCREMENT
+        ZOOM_FACTOR = zoom_slider.get_value()
 
         # Collectibles Interaction
         collected_items = pygame.sprite.spritecollide(player, collectibles, True)
@@ -223,6 +264,8 @@ def run_game():
         all_sprites.draw(screen)
         score_text = font.render(f"Score: {score}", True, (0, 0, 0))
         screen.blit(score_text, (10, 10))
+
+        zoom_slider.render(screen)
 
         pygame.display.flip()
         clock.tick(60)
