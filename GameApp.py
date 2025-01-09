@@ -1,13 +1,18 @@
 import pygame
 import math
+import os
+import pygame.locals
 from pygame_widgets import slider
 
 # Function to run the game (called from the main menu)
 
-def run_game():
+def run_game(max_depth = 3):
 
     # Initialize Pygame
     pygame.init()
+    
+    # Assets
+    assets_folder = "Assets"
 
     # Screen Settings
     SCREEN_WIDTH = 1200
@@ -24,19 +29,24 @@ def run_game():
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     LIGHT_BLUE = (173, 216, 230)
-    BACKGROUND_COLOR = YELLOW
+    
+    # Backgrond Image
+    BACKGROUND_IMG_PATH = os.path.join(assets_folder, "bal.jpg")
+    BACKGROUND_IMAGE = pygame.image.load(BACKGROUND_IMG_PATH)
+    BACKGROUND_IMAGE = pygame.transform.scale(BACKGROUND_IMAGE, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     # Character Settings
     CHARACTER_WIDTH = 100
     CHARACTER_HEIGHT = 100
     VELOCITY = 5
-    CHARACTER_IMAGE_PATH = r"C:\Users\User\work program\uber\HousingAnywhere[infa]\Fractal_Project_1\Assets\BEE_char.png"  # Replace with your image path
+    CHARACTER_IMAGE_PATH = os.path.join(assets_folder, "BEE_char.png") # Replace with your image path
+
+    # Replace with your image path
     character_image = pygame.image.load(CHARACTER_IMAGE_PATH)
     character_image = pygame.transform.scale(character_image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
     # Zoom Settings
     ZOOM_FACTOR = 1.0
-    ZOOM_INCREMENT = 0.01
     MAX_ZOOM = 5.0
     MIN_ZOOM = 0.5
 
@@ -67,11 +77,12 @@ def run_game():
             if keys[pygame.K_DOWN]:
                 self.rect.y += self.speed
 
-    # Collectible Class
-    COLLECTIBLE_IMAGE_PATH = r"C:\Users\User\work program\uber\HousingAnywhere[infa]\Fractal_Project_1\Assets\HONEY.png"  # Replace with your image path
+    # Collectible Image
+    COLLECTIBLE_IMAGE_PATH = os.path.join(assets_folder, "HONEY.png") # Replace with your image path
     collectible_image = pygame.image.load(COLLECTIBLE_IMAGE_PATH)
     collectible_image = pygame.transform.scale(collectible_image, (30, 30))
 
+    # Collectible Class
     class Collectible(pygame.sprite.Sprite):
         def __init__(self):
             super().__init__()
@@ -87,7 +98,8 @@ def run_game():
             y = center_y + radius * math.sin(angle)
             points.append((x, y))
         return points
-
+    
+    # Collision
     def point_in_polygon(x, y, polygon):
         n = len(polygon)
         inside = False
@@ -98,7 +110,8 @@ def run_game():
                 inside = not inside
             px, py = sx, sy
         return inside
-
+    
+    # Recursively draw hexagons
     def draw_sierpinski_hexagon(center_x, center_y, radius, depth, rotation=0):
         if depth == 0:
             return
@@ -205,7 +218,7 @@ def run_game():
     # Add after the game variables initialization:
     slider_width, slider_height = 200, 20
     slider_pos = (SCREEN_WIDTH - slider_width // 2 - 20, SCREEN_HEIGHT - slider_height // 2 - 20)
-    zoom_slider = Slider(slider_pos, (slider_width, slider_height), 1.0, MIN_ZOOM, MAX_ZOOM)
+    zoom_slider = Slider(slider_pos, (slider_width, slider_height), 1.11, MIN_ZOOM, MAX_ZOOM)
 
     # Main Game Loop
     running = True
@@ -236,7 +249,7 @@ def run_game():
                 player.rect.y = new_y
                 break
 
-        # Change Color Scheme
+        # Change Fractal's Color
         if keys_pressed[pygame.K_0]:
             COLOR_TABLE = (DARK_ORANGE, YELLOW)
         elif keys_pressed[pygame.K_1]:
@@ -246,7 +259,7 @@ def run_game():
         elif keys_pressed[pygame.K_3]:
             COLOR_TABLE = (DARK_GREEN, GREEN)
 
-        # Zoom Controls
+        # Zoom Controls (Slider)
         ZOOM_FACTOR = zoom_slider.get_value()
 
         # Collectibles Interaction
@@ -259,7 +272,7 @@ def run_game():
             running = False
 
         # Draw Everything
-        screen.fill(BACKGROUND_COLOR)
+        screen.blit(BACKGROUND_IMAGE, (0,0))
         draw_sierpinski_hexagon(center_x, center_y, base_radius * ZOOM_FACTOR, max_depth, rotation_angle)
         all_sprites.draw(screen)
         score_text = font.render(f"Score: {score}", True, (0, 0, 0))
