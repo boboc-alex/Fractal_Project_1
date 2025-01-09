@@ -6,7 +6,7 @@ from pygame_widgets import slider
 
 # Function to run the game (called from the main menu)
 
-def run_game(max_depth = 3):
+def run_game(max_depth =2):
 
     # Initialize Pygame
     pygame.init()
@@ -29,6 +29,7 @@ def run_game(max_depth = 3):
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     LIGHT_BLUE = (173, 216, 230)
+    BLACK = (0, 0, 0)
     
     # Backgrond Image
     BACKGROUND_IMG_PATH = os.path.join(assets_folder, "bal.jpg")
@@ -138,10 +139,10 @@ def run_game(max_depth = 3):
 
     # Fractal Settings
     rotation_angle = 90
-    max_depth = 3
     center_x = SCREEN_WIDTH // 2
     center_y = SCREEN_HEIGHT // 2
     base_radius = 300
+
     hexagons = []
     inner_hexagon_centers = []
 
@@ -268,8 +269,14 @@ def run_game(max_depth = 3):
             score += 1
 
         if len(collectibles) == 0:
-            print("Game Over! You collected all items.")
-            running = False
+            # Display "GAME OVER" on the screen
+            screen.blit(BACKGROUND_IMAGE, (0,0))
+            game_over_text = font.render("GAME OVER", True, BLACK)  # Black text
+            screen.blit(game_over_text, (SCREEN_WIDTH // 2 - game_over_text.get_width() // 2, SCREEN_HEIGHT // 2))
+            pygame.display.flip()
+            pygame.time.delay(3000)  # Pause for 3 seconds
+
+            running = False  # End the game loop
 
         # Draw Everything
         screen.blit(BACKGROUND_IMAGE, (0,0))
