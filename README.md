@@ -87,6 +87,5 @@ HONEY.png: Represents the collectible honey items.
 - Collect honey scattered across the hexagonal fractal by moving the bee over them.
 - The game ends when all honey is collected.
 
-Credits
-This game is built using the Pygame library.
-Custom assets and images are required to make the game visually appealing.
+## Credits
+This game is built using the Pygame, Tkinter and cv2 library.
