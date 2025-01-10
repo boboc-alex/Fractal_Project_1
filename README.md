@@ -6,8 +6,8 @@ The game is centered around the Sierpinski Hexagon, where players control a bee,
 The project combines mathematical concepts, recursive logic, and game mechanics to create an educational and entertaining experience.
 ## Features
 ### Interactive Gameplay:
--Control a bee to navigate through fractal-based levels.
--Collect honey scattered across the hexagonal maze.
+*Control a bee to navigate through fractal-based levels.
+*Collect honey scattered across the hexagonal maze.
 ### Fractal Visualization:
 -Explore the recursive structure of the Sierpinski Hexagon.
 -Dynamic color gradients enhance the visual appeal of fractals.
