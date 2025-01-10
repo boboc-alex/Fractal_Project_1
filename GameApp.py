@@ -6,7 +6,7 @@ from pygame_widgets import slider
 
 # Function to run the game (called from the main menu)
 
-def run_game(max_depth = 3):
+def run_game(max_depth):
 
     # Initialize Pygame
     pygame.init()
@@ -29,6 +29,7 @@ def run_game(max_depth = 3):
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     LIGHT_BLUE = (173, 216, 230)
+    BLACK = (0, 0, 0)
     
     # Backgrond Image
     BACKGROUND_IMG_PATH = os.path.join(assets_folder, "bal.jpg")
@@ -36,12 +37,10 @@ def run_game(max_depth = 3):
     BACKGROUND_IMAGE = pygame.transform.scale(BACKGROUND_IMAGE, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
     # Character Settings
-    CHARACTER_WIDTH = 100
-    CHARACTER_HEIGHT = 100
+    CHARACTER_WIDTH = 80
+    CHARACTER_HEIGHT = 80
     VELOCITY = 5
     CHARACTER_IMAGE_PATH = os.path.join(assets_folder, "BEE_char.png") # Replace with your image path
-
-    # Replace with your image path
     character_image = pygame.image.load(CHARACTER_IMAGE_PATH)
     character_image = pygame.transform.scale(character_image, (CHARACTER_WIDTH, CHARACTER_HEIGHT))
 
@@ -54,8 +53,6 @@ def run_game(max_depth = 3):
     score = 0
     font = pygame.font.SysFont(None, 36)
     COLOR_TABLE = (DARK_ORANGE, YELLOW)  # Default color
-
-    # Clock
     clock = pygame.time.Clock()
 
     # Player Class
@@ -111,11 +108,21 @@ def run_game(max_depth = 3):
             px, py = sx, sy
         return inside
     
-    # Recursively draw hexagons
+  
+    # Fractal Settings
+    rotation_angle = 90
+    center_x = SCREEN_WIDTH // 2
+    center_y = SCREEN_HEIGHT // 2
+    base_radius = 300
+
+    hexagons = []
+    inner_hexagon_centers = []
+
+    # Populate Hexagons and Centers
     def draw_sierpinski_hexagon(center_x, center_y, radius, depth, rotation=0):
         if depth == 0:
             return
-
+        
         start_color, end_color = COLOR_TABLE
         C1 = start_color[0] - int((start_color[0] - end_color[0]) * (depth / max_depth))
         C2 = start_color[1] - int((start_color[1] - end_color[1]) * (depth / max_depth))
@@ -123,33 +130,7 @@ def run_game(max_depth = 3):
         current_color = (C1, C2, C3)
 
         points = calculate_hexagon(center_x, center_y, radius, rotation)
-        pygame.draw.polygon(screen, current_color, points, 0)
-
-        inner_radius = radius / 3
-        distance_to_center = (2 * radius) / 3
-
-        for i in range(6):
-            angle = math.radians(60 * i + rotation)
-            child_center_x = center_x + distance_to_center * math.cos(angle)
-            child_center_y = center_y + distance_to_center * math.sin(angle)
-            draw_sierpinski_hexagon(child_center_x, child_center_y, inner_radius, depth - 1, rotation)
-
-        draw_sierpinski_hexagon(center_x, center_y, inner_radius, depth - 1, rotation)
-
-    # Fractal Settings
-    rotation_angle = 90
-    max_depth = 3
-    center_x = SCREEN_WIDTH // 2
-    center_y = SCREEN_HEIGHT // 2
-    base_radius = 300
-    hexagons = []
-    inner_hexagon_centers = []
-
-    # Populate Hexagons and Centers
-    def populate_hexagons(center_x, center_y, radius, depth, rotation=0):
-        if depth == 0:
-            return
-        points = calculate_hexagon(center_x, center_y, radius, rotation)
+        pygame.draw.polygon(screen, current_color, points, 0) # 0 for filling inside of the hexagon (better visual)
         hexagons.append(points)
 
         if depth == 1:
@@ -161,10 +142,10 @@ def run_game(max_depth = 3):
             angle = math.radians(60 * i + rotation)
             child_center_x = center_x + distance_to_center * math.cos(angle)
             child_center_y = center_y + distance_to_center * math.sin(angle)
-            populate_hexagons(child_center_x, child_center_y, inner_radius, depth - 1, rotation)
-        populate_hexagons(center_x, center_y, inner_radius, depth - 1, rotation)
+            draw_sierpinski_hexagon(child_center_x, child_center_y, inner_radius, depth - 1, rotation)
+        draw_sierpinski_hexagon(center_x, center_y, inner_radius, depth - 1, rotation)
 
-    populate_hexagons(center_x, center_y, base_radius, max_depth, rotation_angle)
+    draw_sierpinski_hexagon(center_x, center_y, base_radius, max_depth, rotation_angle)
 
     # Initialize Sprites
     player = Player()
@@ -268,8 +249,14 @@ def run_game(max_depth = 3):
             score += 1
 
         if len(collectibles) == 0:
-            print("Game Over! You collected all items.")
-            running = False
+            # Display "GAME OVER" on the screen
+            screen.blit(BACKGROUND_IMAGE, (0,0))
+            game_over_text = font.render("GAME OVER", True, BLACK)  # Black text
+            screen.blit(game_over_text, (SCREEN_WIDTH // 2 - game_over_text.get_width() // 2, SCREEN_HEIGHT // 2))
+            pygame.display.flip()
+            pygame.time.delay(3000)  # Pause for 3 seconds
+
+            running = False  # End the game loop
 
         # Draw Everything
         screen.blit(BACKGROUND_IMAGE, (0,0))

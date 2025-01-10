@@ -3,7 +3,7 @@ import cv2
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import *
-from GameApp import run_game  # Import the Hexagon game script (ensure GameApp.py is in the same directory)
+from GameApp import run_game  # Import the Hexagon game script   (ensure GameApp.py is in the same directory) 
 
 # VIDEO BACKGROUND
 class VideoBackground:
@@ -115,20 +115,23 @@ def level_selection_menu():
     title_label.pack(pady=20)
 
     # Level Buttons
-    tk.Button(level_root, text="Level 1", font=("Arial", 14), width=20, command=lambda: start_game(level_root, 2), bg="orange").pack(pady=10)
-    tk.Button(level_root, text="Level 2", font=("Arial", 14), width=20, command=lambda: start_game(level_root, 3), bg="orange").pack(pady=10)
-    tk.Button(level_root, text="Level 3", font=("Arial", 14), width=20, command=lambda: start_game(level_root, 4), bg="orange").pack(pady=10)
+    tk.Button(level_root, text="Level 1", font=("Arial", 14), width=20, 
+            command=lambda: start_game(level_root, 2)).pack(pady=10)  # max_depth = 2
+    tk.Button(level_root, text="Level 2", font=("Arial", 14), width=20, 
+            command=lambda: start_game(level_root, 3)).pack(pady=10)  # max_depth = 3
+    tk.Button(level_root, text="Level 3", font=("Arial", 14), width=20, 
+            command=lambda: start_game(level_root, 4)).pack(pady=10)  # max_depth = 4
 
     level_root.mainloop()
 
 # Start Game Function
 def start_game(level_root, depth):
     level_root.destroy()
-    run_game(depth)  # Pass the depth to the GameApp run_game function
+    run_game(max_depth=depth)  # Pass the depth (max_depth) to run_game
+
 
 # Main Tkinter Loop
 if __name__ == "__main__":
     root = tk.Tk()
     app = MainMenuApp(root)
     root.mainloop()
-
