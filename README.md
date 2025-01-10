@@ -41,15 +41,14 @@
 - Run the following command to install Pygame:
   ```bash
   pip install pygame
+-If you haven’t installed other libraries like OpenCV or pygame-widgets, install them as well:
+  ```bash
+  pip install opencv-python pygame-widgets
 
 
 
-To install Pygame, you can use the following command:
 
-bash
-Copy code
-pip install pygame
-Additionally, the game uses images that should be placed in an Assets folder:
+
 
 bal.jpg for the background image
 BEE_char.png for the character (bee)
