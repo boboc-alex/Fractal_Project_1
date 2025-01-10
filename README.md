@@ -30,6 +30,17 @@
 ### **Gamification Elements:**
 - Scoring system based on collected honey.
 
+# **Step-by-Step Guide for Bee's Adventure**
+
+---
+
+## **1. Installation**
+
+### Step 1: Install Pygame
+- Open your terminal or command prompt.
+- Run the following command to install Pygame:
+  ```bash
+  pip install pygame
 
 
 
