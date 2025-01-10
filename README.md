@@ -44,15 +44,21 @@
 -If you haven’t installed other libraries like OpenCV or pygame-widgets, install them as well:
   ```bash
   pip install opencv-python pygame-widgets
+  ```
+
+## 2. Prepare the Assets Folder
+
+### Step 1: Create an Assets folder
+-Inside the project directory, create a folder named Assets.
+### Step 2: Add Required Images
+-Place the following images into the Assets folder:
+bal.jpg: Used as the background image.
+BEE_char.png: Represents the bee character.
+HONEY.png: Represents the collectible honey items.
 
 
 
 
-
-
-bal.jpg for the background image
-BEE_char.png for the character (bee)
-HONEY.png for the collectible items (honey)
 Game Instructions
 Move the Player: Use the arrow keys (Up, Down, Left, Right) to move the bee.
 Zoom: Use the slider at the bottom-right of the screen to zoom in and out of the fractal.
